@@ -1,13 +1,12 @@
 {
-  "name": "boilerplate",
+  "name": "easy-tax",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.3",
-    "@testing-library/react": "^12.1.4",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^13.5.0",
-    "axios": "^0.26.1",
-    "dayjs": "^1.11.0",
+    "axios": "^0.27.2",
     "joi": "^17.6.0",
     "joi-translation-pt-br": "^0.0.6",
     "react": "^17.0.2",
@@ -15,9 +14,9 @@
     "react-icons": "^4.3.1",
     "react-loader-spinner": "^6.0.0-0",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.0",
+    "react-scripts": "5.0.1",
     "styled-components": "^5.3.5",
-    "sweetalert2": "^11.4.8",
+    "sweetalert2": "^11.4.14",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -48,8 +47,8 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^8.12.0",
+    "eslint": "^8.15.0",
     "eslint-plugin-react": "^7.29.4",
-    "husky": "^7.0.4"
+    "husky": "^8.0.1"
   }
 }

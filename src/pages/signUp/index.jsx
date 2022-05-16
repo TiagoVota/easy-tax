@@ -8,8 +8,8 @@ import { postSignUp } from '../../services/api.auth'
 
 import { signUpSchema } from '../../schemas/userSchema'
 
-import Container from '../../components/Container'
-import Logo from '../../components/Logo'
+import Container from '../../components/pageContainer'
+import Logo from '../../components/logo'
 
 
 const SignUp = () => {
@@ -39,7 +39,7 @@ const SignUp = () => {
 				successModal('Cadastro realizado!')
 				clearForm()
 
-				navigate('/auth/login')
+				navigate('/login')
 			}).catch(({ request: { status }}) => handleFailLogin(status))
 	}
 
@@ -108,7 +108,7 @@ const SignUp = () => {
 				</Button>
 			</Form>
 
-			<Link to='/auth/login'>
+			<Link to='/login'>
 				<RedirectP>
 					Já tem uma conta? Entre agora!
 				</RedirectP>

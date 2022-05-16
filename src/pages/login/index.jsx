@@ -9,8 +9,8 @@ import { postLogin } from '../../services/api.auth'
 
 import { loginSchema } from '../../schemas/userSchema'
 
-import Container from '../../components/Container'
-import Logo from '../../components/Logo'
+import Container from '../../components/pageContainer'
+import Logo from '../../components/logo'
 
 
 const Login = () => {
@@ -97,7 +97,7 @@ const Login = () => {
 				</Button>
 			</Form>
 
-			<Link to='/auth/sign-up'>
+			<Link to='/sign-up'>
 				<RedirectP>
 					Primeira vez? Cadastre-se!
 				</RedirectP>
