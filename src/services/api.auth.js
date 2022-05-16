@@ -1,23 +1,19 @@
-import axios from 'axios'
-
-import { makeConfig } from './helpers/configHelper'
-
-import BASE_URL from './baseUrl'
+import { makeBaseAPI } from './helpers/baseUrlHelper'
 
 
-const AUTH_URL = `${BASE_URL}/auth`
+const baseAPI = makeBaseAPI('auth')
 
 const postLogin = ({ email, password }) => {
 	const body = { email, password }
-
-	return axios.post(`${AUTH_URL}/login`, body)
+	
+	return baseAPI.post('/login', body)
 }
 
 
-const postSignUp = ({ name, email, password, repeatPassword }) => {
-	const body = { name, email, password, repeatPassword }
+const postSignUp = ({ name, email, password }) => {
+	const body = { name, email, password }
 
-	return axios.post(`${AUTH_URL}/sign-up`, body)
+	return baseAPI.post('/sign-up', body)
 }
 
 

@@ -1,26 +1,47 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
+import { useEffect, useState } from 'react'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import {
+	Box,
+	Button,
+	Divider,
+	Link,
+	TextField,
+	Typography,
+} from '@mui/material'
 
-import { handleValidation } from '../../validations/handleValidation'
+import useAuth from '../../hooks/useAuth'
+
+import * as api from '../../services/api.auth'
 import { errorModal, successModal } from '../../factories/modalFactory'
-import { postSignUp } from '../../services/api.auth'
+import { handleValidation } from '../../validations/handleValidation'
 
 import { signUpSchema } from '../../schemas/userSchema'
 
-import Container from '../../components/pageContainer'
-import Logo from '../../components/logo'
+import Form from '../../components/form'
+import PasswordInput from '../../components/passwordInput'
 
+import styles from '../../components/formComponents'
+
+
+const defaultFormData = {
+	name: '',
+	email: '',
+	password: '',
+	repeatPassword: '',
+}
 
 const SignUp = () => {
+	const { token } = useAuth()
 	const navigate = useNavigate()
-	const [formData, setFormData] = useState({})
+	const [formData, setFormData] = useState(defaultFormData)
 
-	const changeFormData = (atribute, value) => {
-		const newFormData = { ...formData }
-		newFormData[atribute] = value
+	useEffect(() => {
+		if (token) goHomepage()
+	}, [])
 
-		setFormData(newFormData)
+	const handleInputChange = (event) => {
+		const { name, value } = event.target
+		setFormData({ ...formData, [name]: value })
 	}
 
 	const handleSubmit = (event) => {
@@ -34,16 +55,14 @@ const SignUp = () => {
 		const { isValid, error } = handleValidation(body, signUpSchema)
 		if (!isValid) return errorModal(error)
 
-		postSignUp(body)
+		api.postSignUp(body)
 			.then(() => {
 				successModal('Cadastro realizado!')
-				clearForm()
-
-				navigate('/login')
-			}).catch(({ request: { status }}) => handleFailLogin(status))
+				goLoginPage()
+			}).catch(({ request: { status }}) => handleFailSignUp(status))
 	}
 
-	const handleFailLogin = (status) => {
+	const handleFailSignUp = (status) => {
 		const msgStatus = {
 			409: 'E-mail já cadastrado!',
 			422: 'Campo(s) inválido(s)!',
@@ -55,115 +74,93 @@ const SignUp = () => {
 		errorModal(msgToSend)
 	}
 
-	const clearForm = () => setFormData({})
+	const goLoginPage = () => {
+		setFormData(defaultFormData)
+		navigate('/login')
+	}
+
+	const goHomepage = () => {
+		setFormData(defaultFormData)
+		navigate('/')
+	}
 
 
 	return (
-		<Container>
-			<Logo />
+		<Form onSubmit={handleSubmit}>
+			<Box sx={styles.container}>
+				<Typography
+					sx={styles.title}
+					color='secondary'
+					variant='h4'
+					component='h1'
+				>
+          Cadastro
+				</Typography>
 
-			<Form onSubmit={handleSubmit}>
-				<Label htmlFor='Nome'>Nome:</Label>
-				<Input
-					id='Nome'
-					placeholder='Ex: Meu Lindo Nome'
-					type='text'
-					onChange={({ target: { value }}) => changeFormData('name', value)}
-					value={formData.name}
-					required
-				/>
-
-				<Label htmlFor='E-mail'>E-mail:</Label>
-				<Input
-					id='E-mail'
-					placeholder='Ex: meulindoemail@email.com'
-					type='email'
-					onChange={({ target: { value }}) => changeFormData('email', value)}
-					value={formData.email}
-					required
-				/>
-
-				<Label htmlFor='Senha'>Senha:</Label>
-				<Input
-					id='Senha'
-					placeholder='Ex: Senha!123'
-					type='text'
-					onChange={({ target: { value }}) => changeFormData('password', value)}
-					value={formData.password}
-					required
-				/>
-
-				<Label htmlFor='Confirme sua senha'>Confirme sua senha:</Label>
-				<Input
-					id='Confirme sua senha'
-					placeholder='Ex: Senha!123'
-					type='text'
-					onChange={({ target: { value }}) => changeFormData('repeatPassword', value)}
-					value={formData.repeatPassword}
-					required
-				/>
-
-				<Button type='submit'>
-					Cadastrar
+				{/* TODO: Adicionar entrar com gmail
+				<Button variant="contained" color="secondary">
+          Entrar com Github
 				</Button>
-			</Form>
+				<Box sx={styles.dividerContainer}>
+					<Divider sx={{ flex: '1' }} />
+					<Typography variant="caption" component="span">
+            ou
+					</Typography>
+					<Divider sx={{ flex: '1' }} />
+				</Box> */}
 
-			<Link to='/login'>
-				<RedirectP>
-					Já tem uma conta? Entre agora!
-				</RedirectP>
-			</Link>
-		</Container>
+				<TextField
+					name="name"
+					sx={styles.input}
+					label="Nome"
+					type="text"
+					variant="outlined"
+					onChange={handleInputChange}
+					value={formData.name}
+					autoFocus={true}
+				/>
+
+				<TextField
+					name="email"
+					sx={styles.input}
+					label="E-mail"
+					type="email"
+					variant="outlined"
+					onChange={handleInputChange}
+					value={formData.email}
+				/>
+
+				<PasswordInput
+					name="password"
+					sx={styles.input}
+					label="Senha"
+					onChange={handleInputChange}
+					value={formData.password}
+				/>
+
+				<PasswordInput
+					name="repeatPassword"
+					sx={styles.input}
+					label="Confirme sua senha"
+					onChange={handleInputChange}
+					value={formData.repeatPassword}
+				/>
+
+				<Box sx={styles.actionsContainer}>
+					<Link component={RouterLink} to="/login">
+						<Typography>
+							Já possuo cadastro
+						</Typography>
+					</Link>
+
+					<Button variant="contained" type="submit">
+            Cadastrar
+					</Button>
+				</Box>
+			</Box>
+		</Form>
 	)
 }
 
 
 export default SignUp
-
-
-const Form = styled.form`
-	margin: 25px 0;
-`
-
-const Label = styled.label`
-	margin-left: 6%;
-
-	font-size: 20px;
-	line-height: 24px;
-
-	color: #FFFFFF;
-`
-
-const Input = styled.input`
-	width: 88%;
-	height: 58px;
-	margin: 0 6vw 4px;
-	padding-left: 13px;
-
-	font-size: 20px;
-
-	border-radius: 5px;
-	border-width: 0px;
-
-	background: #FFFFFF;
-`
-
-const Button = styled.button`
-	width: 88%;
-	height: 46px;
-	margin: 15px 6vw;
-
-	font-weight: bold;
-	font-size: 20px;
-	line-height: 23px;
-
-	border-radius: 5px;
-`
-
-const RedirectP = styled.p`
-	font-weight: bold;
-	font-size: 15px;
-	line-height: 18px;
-
-	color: #FFFFFF;
-`
