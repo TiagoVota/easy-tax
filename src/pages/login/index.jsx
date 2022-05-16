@@ -20,7 +20,7 @@ import { loginSchema } from '../../schemas/userSchema'
 import Form from '../../components/form'
 import PasswordInput from '../../components/passwordInput'
 
-import styles from './styles'
+import styles from '../../components/formComponents'
 
 
 const defaultFormData = {
@@ -28,7 +28,7 @@ const defaultFormData = {
 	password: '',
 }
 
-const SignIn = () => {
+const Login = () => {
 	const { token, login } = useAuth()
 	const navigate = useNavigate()
 	const [formData, setFormData] = useState(defaultFormData)
@@ -46,8 +46,8 @@ const SignIn = () => {
 		event.preventDefault()
 
 		const body = {
+			...formData,
 			email: formData.email?.toLowerCase(),
-			password: formData.password
 		}
 		
 		const { isValid, error } = handleValidation(body, loginSchema)
@@ -75,14 +75,19 @@ const SignIn = () => {
 	}
 
 	const goHomepage = () => {
-		setFormData({})
+		setFormData(defaultFormData)
 		navigate('/')
 	}
 
 	return (
 		<Form onSubmit={handleSubmit}>
 			<Box sx={styles.container}>
-				<Typography sx={styles.title} color='secondary' variant='h4' component='h1'>
+				<Typography
+					sx={styles.title}
+					color='secondary'
+					variant='h4'
+					component='h1'
+				>
           Login
 				</Typography>
 
@@ -134,4 +139,4 @@ const SignIn = () => {
 }
 
 
-export default SignIn
+export default Login
