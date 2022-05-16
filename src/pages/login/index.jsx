@@ -1,32 +1,45 @@
-import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
+import { useEffect, useState } from 'react'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import {
+	Box,
+	Button,
+	Divider,
+	Link,
+	TextField,
+	Typography,
+} from '@mui/material'
 
 import useAuth from '../../hooks/useAuth'
-import { handleValidation } from '../../validations/handleValidation'
+
+import * as api from '../../services/api.auth'
 import { errorModal, successModal } from '../../factories/modalFactory'
-import { postLogin } from '../../services/api.auth'
+import { handleValidation } from '../../validations/handleValidation'
 
 import { loginSchema } from '../../schemas/userSchema'
 
-import Container from '../../components/pageContainer'
-import Logo from '../../components/logo'
+import Form from '../../components/form'
+import PasswordInput from '../../components/passwordInput'
+
+import styles from './styles'
 
 
-const Login = () => {
-	const { auth, login } = useAuth()
+const defaultFormData = {
+	email: '',
+	password: '',
+}
+
+const SignIn = () => {
+	const { token, login } = useAuth()
 	const navigate = useNavigate()
-	const [formData, setFormData] = useState({})
+	const [formData, setFormData] = useState(defaultFormData)
 
 	useEffect(() => {
-		if (auth & auth?.token) goHomepage()
+		if (token) goHomepage()
 	}, [])
 
-	const changeFormData = (atribute, value) => {
-		const newFormData = { ...formData }
-		newFormData[atribute] = value
-
-		setFormData(newFormData)
+	const handleInputChange = (event) => {
+		const { name, value } = event.target
+		setFormData({ ...formData, [name]: value })
 	}
 
 	const handleSubmit = (event) => {
@@ -37,13 +50,13 @@ const Login = () => {
 			password: formData.password
 		}
 		
-		const {isValid, error} = handleValidation(body, loginSchema)
+		const { isValid, error } = handleValidation(body, loginSchema)
 		if (!isValid) return errorModal(error)
 
-		postLogin(body)
-			.then(({ data: userInfo }) => {
+		api.postLogin(body)
+			.then(({ data: loginInfo }) => {
 				successModal('Login realizado!')
-				login(userInfo)
+				login(loginInfo.token)
 				goHomepage()
 			}).catch(({ request: { status }}) => handleFailLogin(status))
 	}
@@ -66,93 +79,59 @@ const Login = () => {
 		navigate('/')
 	}
 
-
 	return (
-		<Container>
-			<Logo />
+		<Form onSubmit={handleSubmit}>
+			<Box sx={styles.container}>
+				<Typography sx={styles.title} color='secondary' variant='h4' component='h1'>
+          Login
+				</Typography>
 
-			<Form onSubmit={handleSubmit}>
-				<Label htmlFor='E-mail'>E-mail:</Label>
-				<Input
-					id='E-mail'
-					placeholder='Ex: meulindoemail@email.com'
-					type='email'
-					onChange={({ target: { value }}) => changeFormData('email', value)}
-					value={formData.email}
-					required
-				/>
-
-				<Label htmlFor='Senha'>Senha:</Label>
-				<Input
-					id='Senha'
-					placeholder='Ex: Senha!123'
-					type='password'
-					onChange={({ target: { value }}) => changeFormData('password', value)}
-					value={formData.password}
-					required
-				/>
-
-				<Button type='submit'>
-					Entrar
+				{/* TODO: Adicionar entrar com gmail
+				<Button variant='contained' color='secondary'>
+          Entrar com Github
 				</Button>
-			</Form>
+				<Box sx={styles.dividerContainer}>
+					<Divider sx={{ flex: '1' }} />
+					<Typography variant='caption' component='span'>
+            ou
+					</Typography>
+					<Divider sx={{ flex: '1' }} />
+				</Box> */}
 
-			<Link to='/sign-up'>
-				<RedirectP>
-					Primeira vez? Cadastre-se!
-				</RedirectP>
-			</Link>
-		</Container>
+				<TextField
+					name='email'
+					sx={styles.input}
+					label='E-mail'
+					type='email'
+					variant='outlined'
+					onChange={handleInputChange}
+					value={formData.email}
+					autoFocus={true}
+				/>
+
+				<PasswordInput
+					name='password'
+					sx={styles.input}
+					label='Senha'
+					onChange={handleInputChange}
+					value={formData.password}
+				/>
+
+				<Box sx={styles.actionsContainer}>
+					<Link component={RouterLink} to='/sign-up'>
+						<Typography>
+							Não possuo cadastro
+						</Typography>
+					</Link>
+
+					<Button variant='contained' type='submit'>
+            Entrar
+					</Button>
+				</Box>
+			</Box>
+		</Form>
 	)
 }
 
 
-export default Login
-
-
-const Form = styled.form`
-	margin: 25px 0;
-`
-
-const Label = styled.label`
-	margin-left: 6%;
-
-	font-size: 20px;
-	line-height: 24px;
-
-	color: #FFFFFF;
-`
-
-const Input = styled.input`
-	width: 88%;
-	height: 58px;
-	margin: 0 6vw 4px;
-	padding-left: 13px;
-
-	font-size: 20px;
-
-	border-radius: 5px;
-	border-width: 0px;
-
-	background: #FFFFFF;
-`
-
-const Button = styled.button`
-	width: 88%;
-	height: 46px;
-	margin: 15px 6vw;
-
-	font-weight: bold;
-	font-size: 20px;
-	line-height: 23px;
-
-	border-radius: 5px;
-`
-
-const RedirectP = styled.p`
-	font-weight: bold;
-	font-size: 15px;
-	line-height: 18px;
-
-	color: #FFFFFF;
-`
+export default SignIn

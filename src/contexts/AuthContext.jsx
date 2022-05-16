@@ -1,21 +1,27 @@
 import { useState, createContext } from 'react'
 
+
 const AuthContext = createContext()
 
+const LOCAL_STORAGE_KEY = 'easy-tax-token'
+const persistedToken = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
 
 const AuthProvider = ({ children }) => {
-	const mockAuth = { name: 'Fulano' }
-	const persistedAuth = JSON.parse(localStorage.getItem('auth'))
-	const [auth, setAuth] = useState(persistedAuth || mockAuth)
+	const [token, setToken] = useState(persistedToken)
 
-	const login = (authData) => {
-		setAuth(authData)
-		localStorage.setItem('auth', JSON.stringify(authData))
+	const login = (token) => {
+		setToken(token)
+		localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(token))
+	}
+
+	const logout = () => {
+		setToken(null)
+		localStorage.removeItem(LOCAL_STORAGE_KEY)
 	}
 
 
 	return (
-		<AuthContext.Provider value={{ auth, login }}>
+		<AuthContext.Provider value={{ token, login, logout }}>
 			{children}
 		</AuthContext.Provider>
 	)
