@@ -13,6 +13,18 @@ const theme = createTheme({
 			default: '#303038',
 			paper: '#FFFFFF'
 		},
+		text: {
+			primary: '#FFFFFF',
+			secondary: '#05C4AA',
+		},
+	},
+	typography: {
+		fontFamily: [
+			'Ubuntu',
+			'Roboto',
+			'sans-serif',
+			'Arial',
+		].join(','),
 	},
 })
 

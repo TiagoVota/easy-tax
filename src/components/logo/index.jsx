@@ -1,11 +1,9 @@
-import { Title } from './styles'
-
+import { Img } from './styles'
+import logo from '../../assets/images/logo.svg'
 
 const Logo = () => {
 	return (
-		<Title>
-			Boilerplate
-		</Title>
+		<Img src={logo} alt='Logo EasyTax' />
 	)
 }
 
