@@ -9,9 +9,9 @@ import Header from './header'
 
 const MainApp = ({ redirectPath='/login' }) => {
 	const { token } = useAuth()
-	if (!token) {
-		return <Navigate to={redirectPath} replace />
-	}
+	// if (!token) {
+	// 	return <Navigate to={redirectPath} replace />
+	// }
 
 
 	return (

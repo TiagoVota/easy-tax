@@ -7,6 +7,8 @@ const styles = {
 		
 		color: 'primary.main',
 		textAlign: 'center',
+
+		padding: '0px 50px',
 	},
 }
 

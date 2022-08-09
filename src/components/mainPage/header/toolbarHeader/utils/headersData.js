@@ -4,12 +4,12 @@ const headersData = [
 		href: '/orders/add',
 	},
 	{
-		label: 'Preços médios',
+		label: 'Imposto de Renda',
 		href: '/orders/ir-data',
 	},
 	{
-		label: 'Preços de vendas',
-		href: '/ir-sells',
+		label: 'Minhas Ordens',
+		href: '/orders/my-orders',
 	},
 ]
 
